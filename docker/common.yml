@@ -1,0 +1,53 @@
+version: '3.7'
+
+services:
+  claude_pimcore_db:
+    build: ./mariadb
+    container_name: claude_pimcore_db
+    hostname: claude_pimcore_db
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+      - ./data/exchange:/data_exchange
+      - ./logs/mysql:/var/logs/mysql
+      - ./data/mariadb/conf:/etc/mysql/conf.d
+    networks:
+      - traefik
+
+  claude_pimcore_php-fpm:
+    build: ./php-fpm
+    container_name: claude_pimcore_php-fpm
+    hostname: claude_pimcore_php-fpm
+    volumes:
+      - ./../projects/axa/www:/var/www/html
+      - ./../projects/data:/var/www/data
+      - ./../projects/logs/php-fpm:/var/log/php
+      - ./../projects/logs/cron:/var/log/cron
+    networks:
+      - traefik
+
+  claude_pimcore_nginx:
+    build: ./nginx
+    labels:
+      - traefik.enable=true
+      - traefik.port=80
+      - traefik.frontend.passHostHeader=true
+      - traefik.frontend.headers.STSSeconds=315360000
+      - traefik.frontend.headers.STSIncludeSubdomains=true
+      - traefik.frontend.headers.STSPreload=true
+    expose:
+      - "80"
+    volumes:
+      - ./../projects/axa/www:/var/www/html
+      - ./../projects/axa/data:/var/www/data
+      - ./../projects/axa/logs/nginx:/var/log/nginx
+    networks:
+      - traefik
+
+  claude_pimcore_redis:
+    build: ./redis
+    container_name: claude_pimcore_redis
+    hostname:  claude_pimcore_redis
+    volumes:
+      - ./data/data/redis:/data
+    networks:
+      - traefik

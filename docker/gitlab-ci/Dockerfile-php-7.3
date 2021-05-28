@@ -1,0 +1,79 @@
+FROM php:7.3-fpm
+
+MAINTAINER Dirk Blicker <dirk.blicker@abus-kransysteme.de>
+
+# Install additional software
+RUN apt-get update && apt-get install -y \
+        git \
+        zip \
+        libzip-dev \
+        imagemagick \
+        graphicsmagick \
+        jpegoptim \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libimage-exiftool-perl \
+        zlib1g-dev \
+        libicu-dev \
+        g++ \
+        libxml2-dev \
+        libxslt1-dev \
+        libbz2-dev \
+        libldap2-dev \
+        libcurl4-openssl-dev \
+        file \
+        libssl-dev \
+        xvfb \
+        xfonts-75dpi \
+        wkhtmltopdf \
+        optipng \
+        mariadb-client \
+    && CFLAGS="-I/usr/src/php" docker-php-ext-install xmlreader \
+    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install -j$(nproc) \
+        gd \
+        iconv \
+        opcache \
+        ldap \
+        pdo \
+        pdo_mysql \
+        mysqli \
+        intl \
+        json \
+        xsl \
+        simplexml \
+        posix \
+        mbstring \
+        exif \
+        bz2 \
+        curl \
+        dom \
+        fileinfo \
+        ftp \
+        pcntl \
+        zip \
+        mysqli
+
+# Installation Imagemagick
+RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN pecl install imagick && docker-php-ext-enable imagick
+
+# Install & enable Xdebug for code coverage reports
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+&& php -r "if (hash_file('sha384', 'composer-setup.php') === 'a5c698ffe4b8e849a443b120cd5ba38043260d5c4023dbf93e1558871f1f07f58274fc6f4c93bcfd858c6bd0775cd8d1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+&& php composer-setup.php --install-dir=/bin --filename=composer \
+&& php -r "unlink('composer-setup.php');"
+
+# Node.js
+RUN curl -sL https://deb.nodesource.com/setup_12.x -o nodesource_setup.sh
+RUN bash nodesource_setup.sh
+RUN apt-get install nodejs -y
+RUN npm install npm@6.9.0 -g
+RUN command -v node
+RUN command -v npm
