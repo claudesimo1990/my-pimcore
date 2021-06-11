@@ -31,7 +31,7 @@ services:
     - "traefik.enable=true"
     - "traefik.docker.network=proxy"
     - "traefik.http.routers.ghost-secure.entrypoints=websecure"
-    - "traefik.http.routers.ghost-secure.rule=Host(`sg.development.claude`)"
+    - "traefik.http.routers.ghost-secure.rule=Host(`pimcore.agentur-sg.com`)"
     - "traefik.http.routers.ghost-secure.service=ghost-service"
     - "traefik.http.services.ghost-service.loadbalancer.server.port=2368"
     expose:
