@@ -11,7 +11,7 @@ services:
       - ./logs/mysql:/var/logs/mysql
       - ./data/mariadb/conf:/etc/mysql/conf.d
     networks:
-      - traefik
+      - proxy
 
   claude_pimcore_php-fpm:
     build: ./php-fpm
@@ -23,17 +23,17 @@ services:
       - ./../projects/logs/php-fpm:/var/log/php
       - ./../projects/logs/cron:/var/log/cron
     networks:
-      - traefik
+      - proxy
 
   claude_pimcore_nginx:
     build: ./nginx
     labels:
-      - traefik.enable=true
-      - traefik.port=80
-      - traefik.frontend.passHostHeader=true
-      - traefik.frontend.headers.STSSeconds=315360000
-      - traefik.frontend.headers.STSIncludeSubdomains=true
-      - traefik.frontend.headers.STSPreload=true
+    - "traefik.enable=true"
+    - "traefik.docker.network=proxy"
+    - "traefik.http.routers.ghost-secure.entrypoints=websecure"
+    - "traefik.http.routers.ghost-secure.rule=Host(`sg.development.claude`)"
+    - "traefik.http.routers.ghost-secure.service=ghost-service"
+    - "traefik.http.services.ghost-service.loadbalancer.server.port=2368"
     expose:
       - "80"
     volumes:
@@ -41,7 +41,7 @@ services:
       - ./../projects/axa/data:/var/www/data
       - ./../projects/axa/logs/nginx:/var/log/nginx
     networks:
-      - traefik
+      - proxy
 
   claude_pimcore_redis:
     build: ./redis
@@ -50,4 +50,4 @@ services:
     volumes:
       - ./data/data/redis:/data
     networks:
-      - traefik
+      - proxy

@@ -10,6 +10,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mariapwd
     command: mysqld --innodb-large-prefix=ON --innodb-file-format=barracuda
+    networks:
+      - proxy
 
   claude_pimcore_php-fpm:
     extends:
@@ -17,34 +19,27 @@ services:
       service: claude_pimcore_php-fpm
     build:
       args:
-        development: 1
-        proxy: 1
-        http_proxy: http://10.0.3.15:3128
-        https_proxy: http://10.0.3.15:3128
-        phpini: php_dev_claude.ini
+        phpini: php_prod.ini
     environment:
       XDEBUG_CONFIG: "client_host=10.0.3.15"
       PHP_IDE_CONFIG: serverName=pimcore
-      http_proxy: http://10.0.3.15:3128
-      https_proxy: http://10.0.3.15:3128
     links:
       - claude_pimcore_db
+    networks:
+      - proxy
 
   claude_pimcore_nginx:
     extends:
       file: common.yml
       service: claude_pimcore_nginx
     container_name: claude_pimcore_nginx
-    labels:
-      - traefik.frontend.rule=Host:pimcore.development.claude,pimcore-us.development.claude,pimcore-gb.development.claude,pimcore-es.development.claude,pimcore-pl.development.claude,pimcore-sv.development.claude,pimcore-fr.development.claude,pimcore-nl.development.claude
     build:
       args:
-        nginxconf: nginx_dev_claude.conf
-        nginxredirectsconf: redirects_prod.conf
-        http_proxy: http://10.0.3.15:3128
-        https_proxy: http://10.0.3.15:3128
+        nginxconf: nginx_prod.conf
     depends_on:
       - claude_pimcore_php-fpm
+    networks:
+      - proxy
 
   claude_pimcore_redis:
     extends:
@@ -52,6 +47,5 @@ services:
       service: claude_pimcore_redis
 
 networks:
-  traefik:
-    external:
-      name: traefik_net
+  proxy:
+    external: true

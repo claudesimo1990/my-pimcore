@@ -1,4 +1,4 @@
-FROM php:7.4.13-fpm
+FROM php:8.0-fpm
 
 MAINTAINER Claude Simo <jeanclaude.simo@abus-kransysteme.de>
 
@@ -33,30 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install -j$(nproc) \
-        gd \
-        iconv \
-        opcache \
-        ldap \
-        pdo \
-        pdo_mysql \
-        mysqli \
-        intl \
-        json \
-        xsl \
-        xmlrpc \
-        simplexml \
-        posix \
-        mbstring \
-        exif \
-        bz2 \
-        curl \
-        dom \
-        fileinfo \
-        ftp \
-        pcntl \
-        zip \
-        bcmath \
+
 && pecl install imagick && pecl install apcu && pecl install redis && docker-php-ext-enable redis imagick apcu \
 && wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz \
     && tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz \
@@ -94,18 +71,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && chmod 0755 /usr/local/bin/advpng \
 && curl -sSL https://github.com/wavexx/facedetect/raw/master/facedetect > /usr/local/bin/facedetect \
     && chmod +x /usr/local/bin/facedetect \
-&& if [ "$development" -eq "1" ]; then yes | pecl install xdebug \
-    && mkdir /var/log/xdebug \
-    && touch /var/log/xdebug/remote.log \
-    && chmod 777 /var/log/xdebug/remote.log \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.max_nesting_level=1000" >> /usr/local/etc/php/conf.d/xdebug.ini; fi \
 && apt-get autoremove -y \
     && apt-get remove -y autoconf automake libtool nasm make pkg-config libz-dev build-essential g++ \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* ~/.composer \
 && echo "Fertig"
+
+RUN docker-php-ext-install curl
+RUN docker-php-ext-install dom
+RUN docker-php-ext-install exif
+RUN docker-php-ext-install fileinfo
+RUN docker-php-ext-install gd
+RUN docker-php-ext-install iconv
+RUN docker-php-ext-install intl
+#RUN docker-php-ext-install json
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install simplexml
+RUN docker-php-ext-install zip
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_MEMORY_LIMIT -1
@@ -114,10 +97,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 # PHP konfigurieren
-COPY config/$phpini /usr/local/etc/php/conf.d/abus.ini
+COPY config/php_prod.ini /usr/local/etc/php/conf.d/abus.ini
 
 # PHP-FPM konfigurieren
-COPY config/php-fpm.conf /usr/local/etc/php-fpm.d/z_last_abus.conf
+# COPY config/php-fpm.conf /usr/local/etc/php-fpm.d/z_last_abus.conf
 
 # LDAP konfigurieren
 COPY config/ldap.conf /etc/ldap/ldap.conf
@@ -129,8 +112,8 @@ RUN chmod 774 /etc/ssl/certs/ca-certificates.crt
 
 # Add CRONJOB
 RUN mkdir /var/log/cron && touch /var/log/cron/cron.log
-COPY cron/pimcore-cron /etc/cron.d/pimcore-cron
-RUN crontab /etc/cron.d/pimcore-cron
+# COPY cron/pimcore-cron /etc/cron.d/pimcore-cron
+# RUN crontab /etc/cron.d/pimcore-cron
 
 WORKDIR /var/www/html
 

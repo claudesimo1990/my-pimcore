@@ -1,0 +1,23 @@
+
+2021/06/11 00:42:44 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:236
+2021/06/11 00:42:44 [emerg] 1#1: no "ssl_certificate" is defined for the "ssl" directive in /etc/nginx/nginx.conf:236
+2021/06/11 00:51:02 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:236
+2021/06/11 00:51:02 [emerg] 1#1: no "ssl_certificate" is defined for the "ssl" directive in /etc/nginx/nginx.conf:236
+2021/06/11 00:51:50 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:236
+2021/06/11 00:51:50 [emerg] 1#1: no "ssl_certificate" is defined for the "ssl" directive in /etc/nginx/nginx.conf:236
+2021/06/11 00:55:09 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:236
+2021/06/11 00:55:09 [emerg] 1#1: no "ssl_certificate" is defined for the "ssl" directive in /etc/nginx/nginx.conf:236
+2021/06/11 01:06:53 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:236
+2021/06/11 01:06:53 [emerg] 1#1: no "ssl_certificate" is defined for the "ssl" directive in /etc/nginx/nginx.conf:236
+2021/06/11 01:09:55 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:236
+2021/06/11 01:09:55 [emerg] 1#1: no "ssl_certificate" is defined for the "ssl" directive in /etc/nginx/nginx.conf:236
+2021/06/11 01:11:41 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:236
+2021/06/11 01:11:41 [warn] 1#1: conflicting server name "sg.development.claude" on 0.0.0.0:443, ignored
+2021/06/11 01:23:13 [warn] 1#1: conflicting server name "sg.development.claude" on 0.0.0.0:80, ignored
+2021/06/11 01:24:28 [warn] 1#1: conflicting server name "sg.development.claude" on 0.0.0.0:80, ignored
+2021/06/11 01:33:07 [warn] 1#1: conflicting server name "sg.development.claude" on 0.0.0.0:80, ignored
+2021/06/11 01:37:47 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:360
+2021/06/11 01:37:47 [emerg] 1#1: cannot load certificate "/etc/nginx/[path_bar]/cacert.pem": BIO_new_file() failed (SSL: error:02001002:system library:fopen:No such file or directory:fopen('/etc/nginx/[path_bar]/cacert.pem','r') error:2006D080:BIO routines:BIO_new_file:no such file)
+2021/06/11 01:51:40 [warn] 1#1: the "ssl" directive is deprecated, use the "listen ... ssl" directive instead in /etc/nginx/nginx.conf:360
+2021/06/11 01:51:40 [emerg] 1#1: no "ssl_certificate" is defined for the "ssl" directive in /etc/nginx/nginx.conf:360
+2021/06/11 01:52:46 [warn] 1#1: conflicting server name "sg.development.claude" on 0.0.0.0:80, ignored
